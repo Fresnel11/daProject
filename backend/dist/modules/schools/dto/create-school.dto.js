@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateSchoolDto = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
+const school_type_enum_1 = require("../../../common/enums/school-type.enum");
 class CreateSchoolDto {
 }
 exports.CreateSchoolDto = CreateSchoolDto;
@@ -107,4 +108,13 @@ __decorate([
     (0, class_validator_1.MinLength)(8),
     __metadata("design:type", String)
 ], CreateSchoolDto.prototype, "directorPassword", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(school_type_enum_1.SchoolType),
+    __metadata("design:type", String)
+], CreateSchoolDto.prototype, "schoolType", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateSchoolDto.prototype, "estimatedEnrollment", void 0);
 //# sourceMappingURL=create-school.dto.js.map

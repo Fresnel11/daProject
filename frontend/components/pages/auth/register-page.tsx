@@ -25,16 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { useSchoolStore } from "@/lib/stores/school-store";
 
 export function RegisterPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
 
@@ -44,45 +42,26 @@ export function RegisterPage() {
 
   const totalSteps = 3;
 
-  const personalInfoSchema = z.object({
-    firstName: z.string().min(1, t("required_field")),
-    lastName: z.string().min(1, t("required_field")),
-    email: z.string().min(1, t("required_field")).email(t("invalid_email")),
-    phone: z.string().min(1, t("required_field")),
-    password: z.string().min(8, t("password_min_length")),
-    confirmPassword: z.string().min(1, t("required_field")),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: t("passwords_dont_match"),
-    path: ["confirmPassword"],
-  });
-
-  const schoolInfoSchema = z.object({
-    schoolName: z.string().min(1, t("required_field")),
-    schoolType: z.string().min(1, t("required_field")),
-    address: z.string().min(1, t("required_field")),
-    city: z.string().min(1, t("required_field")),
-    state: z.string().min(1, t("required_field")),
-    zipCode: z.string().min(1, t("required_field")),
-    country: z.string().min(1, t("required_field")),
-    estimatedEnrollment: z.string().min(1, t("required_field")),
-  });
-
-  const form = useForm<z.infer<typeof personalInfoSchema & typeof schoolInfoSchema>>({
-    resolver: zodResolver(currentStep === 1 ? personalInfoSchema : schoolInfoSchema),
+  const form = useForm({
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      directorFirstName: "",
+      directorLastName: "",
+      directorEmail: "",
+      directorPhone: "",
+      directorPassword: "",
+      confirmDirectorPassword: "",
+      name: "",
       email: "",
       phone: "",
-      password: "",
-      confirmPassword: "",
-      schoolName: "",
-      schoolType: "",
       address: "",
       city: "",
-      state: "",
-      zipCode: "",
       country: "",
+      postalCode: "",
+      website: "",
+      description: "",
+      registrationNumber: "",
+      taxNumber: "",
+      schoolType: "",
       estimatedEnrollment: "",
     },
   });
@@ -104,22 +83,36 @@ export function RegisterPage() {
     { value: "1000+", label: "1000+ " + t("students") },
   ];
 
+  const schoolStore = useSchoolStore();
+
   async function onSubmit(values: any) {
     if (currentStep < totalSteps) {
       setSlideDirection('right');
       setCurrentStep(currentStep + 1);
       return;
     }
-
-    setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Redirect to dashboard
-    router.push('/dashboard');
-    
-    setIsLoading(false);
+    const payload = {
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      address: values.address,
+      city: values.city,
+      country: values.country,
+      postalCode: values.postalCode,
+      website: values.website,
+      description: values.description,
+      registrationNumber: values.registrationNumber,
+      taxNumber: values.taxNumber,
+      schoolType: values.schoolType,
+      estimatedEnrollment: values.estimatedEnrollment,
+      directorFirstName: values.directorFirstName,
+      directorLastName: values.directorLastName,
+      directorEmail: values.directorEmail,
+      directorPhone: values.directorPhone,
+      directorPassword: values.directorPassword,
+    };
+    console.log('Payload envoyé au backend:', payload);
+    await schoolStore.registerSchool(payload, () => router.push('/dashboard'));
   }
 
   const goBack = () => {
@@ -237,71 +230,67 @@ export function RegisterPage() {
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
-                          name="firstName"
+                          name="directorFirstName"
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("first_name")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_first_name")} className="form-input" {...field} />
+                                <Input placeholder={t("enter_first_name") + " (Directeur)"} className="form-input" {...field} />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
-                        
                         <FormField
                           control={form.control}
-                          name="lastName"
+                          name="directorLastName"
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("last_name")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_last_name")} className="form-input" {...field} />
+                                <Input placeholder={t("enter_last_name") + " (Directeur)"} className="form-input" {...field} />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
-                        
                         <FormField
                           control={form.control}
-                          name="email"
+                          name="directorEmail"
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("email")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_email")} type="email" className="form-input" {...field} />
+                                <Input placeholder={t("enter_email") + " (Directeur)"} type="email" className="form-input" {...field} />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
-                        
                         <FormField
                           control={form.control}
-                          name="phone"
+                          name="directorPhone"
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("phone_number")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_phone")} className="form-input" {...field} />
+                                <Input placeholder={t("enter_phone") + " (Directeur)"} className="form-input" {...field} />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
-                        
                         <FormField
                           control={form.control}
-                          name="password"
+                          name="directorPassword"
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
@@ -310,7 +299,7 @@ export function RegisterPage() {
                               <FormControl>
                                 <div className="relative">
                                   <Input 
-                                    placeholder={t("enter_password")} 
+                                    placeholder={t("enter_password") + " (Directeur)"}
                                     type={showPassword ? "text" : "password"}
                                     className="form-input pr-12"
                                     {...field} 
@@ -334,10 +323,9 @@ export function RegisterPage() {
                             </FormItem>
                           )}
                         />
-                        
                         <FormField
                           control={form.control}
-                          name="confirmPassword"
+                          name="confirmDirectorPassword"
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
@@ -345,7 +333,7 @@ export function RegisterPage() {
                               </FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder={t("confirm_password")} 
+                                  placeholder={t("confirm_password") + " (Directeur)"}
                                   type="password"
                                   className="form-input"
                                   {...field} 
@@ -362,20 +350,169 @@ export function RegisterPage() {
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
-                          name="schoolName"
+                          name="name"
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("school_name")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_school_name")} className="form-input" {...field} />
+                                <Input placeholder={t("enter_school_name") + " (École)"} className="form-input" {...field} />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
-                        
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("email")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_email") + " (École)"} type="email" className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("phone_number")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_phone") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="website"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("website")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_website") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="address"
+                          render={({ field }) => (
+                            <FormItem className="form-field lg:col-span-2">
+                              <FormLabel className="form-label text-base">
+                                {t("address")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_address") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("city")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_city") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="country"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("country")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_country") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="postalCode"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("zip_code")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_zip") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem className="form-field lg:col-span-2">
+                              <FormLabel className="form-label text-base">
+                                {t("description")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_description") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="registrationNumber"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("registration_number")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_registration_number") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="taxNumber"
+                          render={({ field }) => (
+                            <FormItem className="form-field">
+                              <FormLabel className="form-label text-base">
+                                {t("tax_number")}
+                              </FormLabel>
+                              <FormControl>
+                                <Input placeholder={t("enter_tax_number") + " (École)"} className="form-input" {...field} />
+                              </FormControl>
+                              <FormMessage className="text-sm" />
+                            </FormItem>
+                          )}
+                        />
                         <FormField
                           control={form.control}
                           name="schoolType"
@@ -402,7 +539,6 @@ export function RegisterPage() {
                             </FormItem>
                           )}
                         />
-                        
                         <FormField
                           control={form.control}
                           name="estimatedEnrollment"
@@ -425,86 +561,6 @@ export function RegisterPage() {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormMessage className="text-sm" />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="address"
-                          render={({ field }) => (
-                            <FormItem className="form-field lg:col-span-2">
-                              <FormLabel className="form-label text-base">
-                                {t("address")}
-                              </FormLabel>
-                              <FormControl>
-                                <Input placeholder={t("enter_address")} className="form-input" {...field} />
-                              </FormControl>
-                              <FormMessage className="text-sm" />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="city"
-                          render={({ field }) => (
-                            <FormItem className="form-field">
-                              <FormLabel className="form-label text-base">
-                                {t("city")}
-                              </FormLabel>
-                              <FormControl>
-                                <Input placeholder={t("enter_city")} className="form-input" {...field} />
-                              </FormControl>
-                              <FormMessage className="text-sm" />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="state"
-                          render={({ field }) => (
-                            <FormItem className="form-field">
-                              <FormLabel className="form-label text-base">
-                                {t("state")}
-                              </FormLabel>
-                              <FormControl>
-                                <Input placeholder={t("enter_state")} className="form-input" {...field} />
-                              </FormControl>
-                              <FormMessage className="text-sm" />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="zipCode"
-                          render={({ field }) => (
-                            <FormItem className="form-field">
-                              <FormLabel className="form-label text-base">
-                                {t("zip_code")}
-                              </FormLabel>
-                              <FormControl>
-                                <Input placeholder={t("enter_zip")} className="form-input" {...field} />
-                              </FormControl>
-                              <FormMessage className="text-sm" />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="country"
-                          render={({ field }) => (
-                            <FormItem className="form-field">
-                              <FormLabel className="form-label text-base">
-                                {t("country")}
-                              </FormLabel>
-                              <FormControl>
-                                <Input placeholder={t("enter_country")} className="form-input" {...field} />
-                              </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -545,9 +601,9 @@ export function RegisterPage() {
                     <Button 
                       type="submit" 
                       className="form-button flex-1"
-                      disabled={isLoading}
+                      disabled={schoolStore.loading}
                     >
-                      {isLoading ? (
+                      {schoolStore.loading ? (
                         <div className="flex items-center space-x-2">
                           <div className="spinner" />
                           <span>{t("creating_account")}</span>
@@ -562,6 +618,11 @@ export function RegisterPage() {
                       )}
                     </Button>
                   </div>
+                  {schoolStore.error && (
+                    <div className="text-red-500 text-center font-semibold py-2">
+                      {schoolStore.error}
+                    </div>
+                  )}
                 </form>
               </Form>
               

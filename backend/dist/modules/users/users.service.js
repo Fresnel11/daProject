@@ -21,7 +21,7 @@ const uuid_1 = require("uuid");
 const user_entity_1 = require("./entities/user.entity");
 const user_school_role_entity_1 = require("./entities/user-school-role.entity");
 const role_entity_1 = require("../../modules/roles/entities/role.entity");
-const school_entity_1 = require("../../modules/schools/entities/school.entity");
+const school_entity_1 = require("../schools/entities/school.entity");
 const school_status_enum_1 = require("../../common/enums/school-status.enum");
 let UsersService = class UsersService {
     constructor(userRepository, userSchoolRoleRepository, roleRepository, schoolRepository) {

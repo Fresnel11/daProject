@@ -1,3 +1,4 @@
+import { SchoolType } from '../../../common/enums/school-type.enum';
 export declare class CreateSchoolDto {
     name: string;
     email: string;
@@ -15,4 +16,6 @@ export declare class CreateSchoolDto {
     directorEmail: string;
     directorPhone: string;
     directorPassword: string;
+    schoolType: SchoolType;
+    estimatedEnrollment: string;
 }

@@ -16,6 +16,7 @@ const school_status_enum_1 = require("../../../common/enums/school-status.enum")
 const user_school_role_entity_1 = require("../../users/entities/user-school-role.entity");
 const role_entity_1 = require("../../roles/entities/role.entity");
 const student_entity_1 = require("../../students/entities/student.entity");
+const school_type_enum_1 = require("../../../common/enums/school-type.enum");
 let School = class School extends base_entity_1.BaseEntity {
     get directorFullName() {
         return `${this.directorFirstName} ${this.directorLastName}`;
@@ -102,6 +103,14 @@ __decorate([
     (0, typeorm_1.Column)({ name: 'rejection_reason', nullable: true }),
     __metadata("design:type", String)
 ], School.prototype, "rejectionReason", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'enum', enum: school_type_enum_1.SchoolType }),
+    __metadata("design:type", String)
+], School.prototype, "schoolType", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], School.prototype, "estimatedEnrollment", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => user_school_role_entity_1.UserSchoolRole, (userSchoolRole) => userSchoolRole.school),
     __metadata("design:type", Array)

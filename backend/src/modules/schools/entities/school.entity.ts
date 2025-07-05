@@ -1,9 +1,10 @@
 import { Entity, Column, OneToMany, Index } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { SchoolStatus } from '@/common/enums/school-status.enum';
+import { SchoolStatus } from '../../../common/enums/school-status.enum';
 import { UserSchoolRole } from '../../users/entities/user-school-role.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Student } from '../../students/entities/student.entity';
+import { SchoolType } from '../../../common/enums/school-type.enum';
 
 @Entity('schools')
 // @Index(['email'], { unique: true })
@@ -67,6 +68,12 @@ export class School extends BaseEntity {
 
   @Column({ name: 'rejection_reason', nullable: true })
   rejectionReason?: string;
+
+  @Column({ type: 'enum', enum: SchoolType })
+  schoolType: SchoolType;
+
+  @Column()
+  estimatedEnrollment: string;
 
   // Relations
   @OneToMany(() => UserSchoolRole, (userSchoolRole) => userSchoolRole.school)

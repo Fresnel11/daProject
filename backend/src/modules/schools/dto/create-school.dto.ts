@@ -5,8 +5,11 @@ import {
   IsUrl,
   MinLength,
   MaxLength,
+  IsEnum,
+  IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { SchoolType } from '../../../common/enums/school-type.enum';
 
 export class CreateSchoolDto {
   @ApiProperty({ example: 'Springfield Elementary School' })
@@ -84,4 +87,11 @@ export class CreateSchoolDto {
   @IsString()
   @MinLength(8)
   directorPassword: string;
+
+  @IsEnum(SchoolType)
+  schoolType: SchoolType;
+
+  @IsString()
+  @IsNotEmpty()
+  estimatedEnrollment: string;
 }

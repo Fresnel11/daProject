@@ -1,8 +1,9 @@
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { SchoolStatus } from '@/common/enums/school-status.enum';
+import { SchoolStatus } from '../../../common/enums/school-status.enum';
 import { UserSchoolRole } from '../../users/entities/user-school-role.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Student } from '../../students/entities/student.entity';
+import { SchoolType } from '../../../common/enums/school-type.enum';
 export declare class School extends BaseEntity {
     name: string;
     email: string;
@@ -24,6 +25,8 @@ export declare class School extends BaseEntity {
     validatedAt?: Date;
     validatedBy?: string;
     rejectionReason?: string;
+    schoolType: SchoolType;
+    estimatedEnrollment: string;
     userRoles: UserSchoolRole[];
     roles: Role[];
     students: Student[];
