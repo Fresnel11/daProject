@@ -1,0 +1,31 @@
+import { BaseEntity } from '../../../common/entities/base.entity';
+import { SchoolStatus } from '@/common/enums/school-status.enum';
+import { UserSchoolRole } from '../../users/entities/user-school-role.entity';
+import { Role } from '../../roles/entities/role.entity';
+import { Student } from '../../students/entities/student.entity';
+export declare class School extends BaseEntity {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+    postalCode: string;
+    website?: string;
+    description?: string;
+    logoUrl?: string;
+    status: SchoolStatus;
+    registrationNumber?: string;
+    taxNumber?: string;
+    directorFirstName: string;
+    directorLastName: string;
+    directorEmail: string;
+    directorPhone: string;
+    validatedAt?: Date;
+    validatedBy?: string;
+    rejectionReason?: string;
+    userRoles: UserSchoolRole[];
+    roles: Role[];
+    students: Student[];
+    get directorFullName(): string;
+}
