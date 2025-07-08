@@ -14,9 +14,9 @@ const students_controller_1 = require("./students.controller");
 const student_entity_1 = require("./entities/student.entity");
 const student_parent_entity_1 = require("./entities/student-parent.entity");
 const user_entity_1 = require("../users/entities/user.entity");
-const school_entity_1 = require("../schools/entities/school.entity");
+const school_entity_1 = require("../../modules/schools/entities/school.entity");
 const user_school_role_entity_1 = require("../../modules/users/entities/user-school-role.entity");
-const role_permission_entity_1 = require("../roles/entities/role-permission.entity");
+const role_permission_entity_1 = require("../../modules/roles/entities/role-permission.entity");
 let StudentsModule = class StudentsModule {
 };
 exports.StudentsModule = StudentsModule;

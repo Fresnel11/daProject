@@ -26,7 +26,7 @@ const permissions_decorator_1 = require("../../common/decorators/permissions.dec
 const current_user_decorator_1 = require("../../common/decorators/current-user.decorator");
 const current_school_decorator_1 = require("../../common/decorators/current-school.decorator");
 const user_entity_1 = require("./entities/user.entity");
-const school_entity_1 = require("../schools/entities/school.entity");
+const school_entity_1 = require("../../modules/schools/entities/school.entity");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;

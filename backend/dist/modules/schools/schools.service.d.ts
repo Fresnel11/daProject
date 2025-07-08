@@ -6,12 +6,14 @@ import { Role } from '../roles/entities/role.entity';
 import { CreateSchoolDto } from './dto/create-school.dto';
 import { ValidateSchoolDto } from './dto/validate-school.dto';
 import { SchoolStatus } from '../../common/enums/school-status.enum';
+import { RolesService } from '../roles/roles.service';
 export declare class SchoolsService {
     private schoolRepository;
     private userRepository;
     private userSchoolRoleRepository;
     private roleRepository;
-    constructor(schoolRepository: Repository<School>, userRepository: Repository<User>, userSchoolRoleRepository: Repository<UserSchoolRole>, roleRepository: Repository<Role>);
+    private readonly rolesService;
+    constructor(schoolRepository: Repository<School>, userRepository: Repository<User>, userSchoolRoleRepository: Repository<UserSchoolRole>, roleRepository: Repository<Role>, rolesService: RolesService);
     create(createSchoolDto: CreateSchoolDto): Promise<{
         id: string;
         name: string;

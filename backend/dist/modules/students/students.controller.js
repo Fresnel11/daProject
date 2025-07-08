@@ -21,7 +21,7 @@ const school_access_guard_1 = require("../../common/guards/school-access.guard")
 const permissions_guard_1 = require("../../common/guards/permissions.guard");
 const permissions_decorator_1 = require("../../common/decorators/permissions.decorator");
 const current_school_decorator_1 = require("../../common/decorators/current-school.decorator");
-const school_entity_1 = require("../schools/entities/school.entity");
+const school_entity_1 = require("../../modules/schools/entities/school.entity");
 let StudentsController = class StudentsController {
     constructor(studentsService) {
         this.studentsService = studentsService;

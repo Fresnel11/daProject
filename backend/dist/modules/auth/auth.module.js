@@ -18,7 +18,7 @@ const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const local_strategy_1 = require("./strategies/local.strategy");
 const user_entity_1 = require("../users/entities/user.entity");
 const user_school_role_entity_1 = require("../../modules/users/entities/user-school-role.entity");
-const school_entity_1 = require("../schools/entities/school.entity");
+const school_entity_1 = require("../../modules/schools/entities/school.entity");
 const users_module_1 = require("../users/users.module");
 let AuthModule = class AuthModule {
 };

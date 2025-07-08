@@ -20,7 +20,7 @@ import { RequirePermissions } from '@/common/decorators/permissions.decorator';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { CurrentSchool } from '@/common/decorators/current-school.decorator';
 import { User } from './entities/user.entity';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 
 @ApiTags('Users')
 @Controller('users')

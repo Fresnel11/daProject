@@ -14,6 +14,7 @@ import { CreateSchoolDto } from './dto/create-school.dto';
 import { ValidateSchoolDto } from './dto/validate-school.dto';
 import { UserType } from '../../common/enums/user-type.enum';
 import { SchoolStatus } from '../../common/enums/school-status.enum';
+import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class SchoolsService {
@@ -26,6 +27,7 @@ export class SchoolsService {
     private userSchoolRoleRepository: Repository<UserSchoolRole>,
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
+    private readonly rolesService: RolesService,
   ) {}
 
   async create(createSchoolDto: CreateSchoolDto) {
@@ -55,6 +57,13 @@ export class SchoolsService {
 
     const savedSchool = await this.schoolRepository.save(school);
 
+    // Créer les rôles par défaut pour l'école
+    const roles = await this.rolesService.createDefaultRolesForSchool(savedSchool.id);
+    const adminRole = roles.find(r => r.name === 'admin');
+    if (!adminRole) {
+      throw new ConflictException('Le rôle admin n\'a pas pu être créé');
+    }
+
     // Check if user already exists
     let directorUser = await this.userRepository.findOne({
       where: { email: createSchoolDto.directorEmail },
@@ -72,26 +81,17 @@ export class SchoolsService {
         type: UserType.ADMIN,
         phone: createSchoolDto.directorPhone,
         isEmailVerified: false, // Will be verified during school validation
+        isActive: false, // Désactive le compte du directeur à la création de l'école
       });
 
       directorUser = await this.userRepository.save(directorUser);
     }
 
-    // Create default director role
-    const directorRole = this.roleRepository.create({
-      name: 'Director',
-      description: 'School Director with full access',
-      schoolId: savedSchool.id,
-      isSystemRole: true,
-    });
-
-    const savedRole = await this.roleRepository.save(directorRole);
-
-    // Create user-school-role relationship (not validated yet)
+    // Associer le directeur au rôle admin (et non director)
     const userSchoolRole = this.userSchoolRoleRepository.create({
       userId: directorUser.id,
       schoolId: savedSchool.id,
-      roleId: savedRole.id,
+      roleId: adminRole.id,
       isActive: false, // Will be activated upon school validation
       isValidated: false,
     });

@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserSchoolRole } from '../../modules/users/entities/user-school-role.entity';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 import { SchoolStatus } from '../enums/school-status.enum';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { StudentsService } from './students.service';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 export declare class StudentsController {
     private readonly studentsService;
     constructor(studentsService: StudentsService);

@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, OneToMany, JoinColumn, Index } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../schools/entities/school.entity';
 import { UserSchoolRole } from '../../../modules/users/entities/user-school-role.entity';
 import { RolePermission } from './role-permission.entity';
 
@@ -13,8 +13,8 @@ export class Role extends BaseEntity {
   @Column()
   description: string;
 
-  @Column({ name: 'school_id' })
-  schoolId: string;
+  @Column({ name: 'school_id', nullable: true })
+  schoolId: string | null;
 
   @Column({ name: 'is_system_role', default: false })
   isSystemRole: boolean;

@@ -6,7 +6,7 @@ import { SchoolAccessGuard } from '@/common/guards/school-access.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { RequirePermissions } from '@/common/decorators/permissions.decorator';
 import { CurrentSchool } from '@/common/decorators/current-school.decorator';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 
 @ApiTags('Students')
 @Controller('students')

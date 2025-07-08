@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from './entities/user.entity';
 import { UserSchoolRole } from './entities/user-school-role.entity';
 import { Role } from '../../modules/roles/entities/role.entity';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserSchoolRoleDto } from './dto/update-user-school-role.dto';

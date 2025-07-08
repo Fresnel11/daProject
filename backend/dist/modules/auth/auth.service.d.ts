@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { User } from '@/modules/users/entities/user.entity';
 import { UserSchoolRole } from '../../modules/users/entities/user-school-role.entity';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 import { LoginDto } from './dto/login.dto';
 export declare class AuthService {
     private userRepository;

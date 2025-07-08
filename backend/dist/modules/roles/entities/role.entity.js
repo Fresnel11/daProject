@@ -27,7 +27,7 @@ __decorate([
     __metadata("design:type", String)
 ], Role.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'school_id' }),
+    (0, typeorm_1.Column)({ name: 'school_id', nullable: true }),
     __metadata("design:type", String)
 ], Role.prototype, "schoolId", void 0);
 __decorate([

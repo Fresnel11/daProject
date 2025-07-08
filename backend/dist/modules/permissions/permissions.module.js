@@ -12,7 +12,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const permissions_service_1 = require("./permissions.service");
 const permissions_controller_1 = require("./permissions.controller");
 const permission_entity_1 = require("./entities/permission.entity");
-const role_permission_entity_1 = require("../roles/entities/role-permission.entity");
+const role_permission_entity_1 = require("../../modules/roles/entities/role-permission.entity");
 let PermissionsModule = class PermissionsModule {
 };
 exports.PermissionsModule = PermissionsModule;

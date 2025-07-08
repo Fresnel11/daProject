@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PERMISSIONS_KEY } from '@/common/decorators/permissions.decorator';
-import { RolePermission } from '@/modules/roles/entities/role-permission.entity';
+import { RolePermission } from '../../modules/roles/entities/role-permission.entity';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Permission = void 0;
 const typeorm_1 = require("typeorm");
 const base_entity_1 = require("../../../common/entities/base.entity");
-const role_permission_entity_1 = require("../../roles/entities/role-permission.entity");
+const role_permission_entity_1 = require("../../../modules/roles/entities/role-permission.entity");
 let Permission = class Permission extends base_entity_1.BaseEntity {
 };
 exports.Permission = Permission;

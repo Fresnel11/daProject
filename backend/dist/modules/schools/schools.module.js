@@ -15,12 +15,13 @@ const school_entity_1 = require("./entities/school.entity");
 const user_entity_1 = require("../users/entities/user.entity");
 const user_school_role_entity_1 = require("../../modules/users/entities/user-school-role.entity");
 const role_entity_1 = require("../../modules/roles/entities/role.entity");
+const roles_module_1 = require("../roles/roles.module");
 let SchoolsModule = class SchoolsModule {
 };
 exports.SchoolsModule = SchoolsModule;
 exports.SchoolsModule = SchoolsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([school_entity_1.School, user_entity_1.User, user_school_role_entity_1.UserSchoolRole, role_entity_1.Role])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([school_entity_1.School, user_entity_1.User, user_school_role_entity_1.UserSchoolRole, role_entity_1.Role]), roles_module_1.RolesModule],
         controllers: [schools_controller_1.SchoolsController],
         providers: [schools_service_1.SchoolsService],
         exports: [schools_service_1.SchoolsService],

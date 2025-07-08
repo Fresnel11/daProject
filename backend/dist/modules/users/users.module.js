@@ -14,7 +14,7 @@ const users_controller_1 = require("./users.controller");
 const user_entity_1 = require("./entities/user.entity");
 const user_school_role_entity_1 = require("./entities/user-school-role.entity");
 const role_entity_1 = require("../../modules/roles/entities/role.entity");
-const school_entity_1 = require("../schools/entities/school.entity");
+const school_entity_1 = require("../../modules/schools/entities/school.entity");
 const role_permission_entity_1 = require("../../modules/roles/entities/role-permission.entity");
 let UsersModule = class UsersModule {
 };

@@ -9,7 +9,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { User } from '@/modules/users/entities/user.entity';
 import { UserSchoolRole } from '../../modules/users/entities/user-school-role.entity';
-import { School } from '@/modules/schools/entities/school.entity';
+import { School } from '../../modules/schools/entities/school.entity';
 import { UsersModule } from '@/modules/users/users.module';
 
 @Module({

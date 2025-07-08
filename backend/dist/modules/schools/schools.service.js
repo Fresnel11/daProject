@@ -23,12 +23,14 @@ const user_school_role_entity_1 = require("../users/entities/user-school-role.en
 const role_entity_1 = require("../roles/entities/role.entity");
 const user_type_enum_1 = require("../../common/enums/user-type.enum");
 const school_status_enum_1 = require("../../common/enums/school-status.enum");
+const roles_service_1 = require("../roles/roles.service");
 let SchoolsService = class SchoolsService {
-    constructor(schoolRepository, userRepository, userSchoolRoleRepository, roleRepository) {
+    constructor(schoolRepository, userRepository, userSchoolRoleRepository, roleRepository, rolesService) {
         this.schoolRepository = schoolRepository;
         this.userRepository = userRepository;
         this.userSchoolRoleRepository = userSchoolRoleRepository;
         this.roleRepository = roleRepository;
+        this.rolesService = rolesService;
     }
     async create(createSchoolDto) {
         const existingSchool = await this.schoolRepository.findOne({
@@ -48,6 +50,11 @@ let SchoolsService = class SchoolsService {
             status: school_status_enum_1.SchoolStatus.PENDING,
         });
         const savedSchool = await this.schoolRepository.save(school);
+        const roles = await this.rolesService.createDefaultRolesForSchool(savedSchool.id);
+        const adminRole = roles.find(r => r.name === 'admin');
+        if (!adminRole) {
+            throw new common_1.ConflictException('Le rôle admin n\'a pas pu être créé');
+        }
         let directorUser = await this.userRepository.findOne({
             where: { email: createSchoolDto.directorEmail },
         });
@@ -61,20 +68,14 @@ let SchoolsService = class SchoolsService {
                 type: user_type_enum_1.UserType.ADMIN,
                 phone: createSchoolDto.directorPhone,
                 isEmailVerified: false,
+                isActive: false,
             });
             directorUser = await this.userRepository.save(directorUser);
         }
-        const directorRole = this.roleRepository.create({
-            name: 'Director',
-            description: 'School Director with full access',
-            schoolId: savedSchool.id,
-            isSystemRole: true,
-        });
-        const savedRole = await this.roleRepository.save(directorRole);
         const userSchoolRole = this.userSchoolRoleRepository.create({
             userId: directorUser.id,
             schoolId: savedSchool.id,
-            roleId: savedRole.id,
+            roleId: adminRole.id,
             isActive: false,
             isValidated: false,
         });
@@ -156,6 +157,7 @@ exports.SchoolsService = SchoolsService = __decorate([
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        roles_service_1.RolesService])
 ], SchoolsService);
 //# sourceMappingURL=schools.service.js.map

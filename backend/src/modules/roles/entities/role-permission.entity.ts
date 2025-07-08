@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { Role } from './role.entity';
-import { Permission } from '@/modules/permissions/entities/permission.entity';
+import { Permission } from '../../permissions/entities/permission.entity';
 
 @Entity('role_permissions')
 @Index(['roleId', 'permissionId'], { unique: true })
