@@ -50,10 +50,9 @@ let SchoolsService = class SchoolsService {
             status: school_status_enum_1.SchoolStatus.PENDING,
         });
         const savedSchool = await this.schoolRepository.save(school);
-        const roles = await this.rolesService.createDefaultRolesForSchool(savedSchool.id);
-        const adminRole = roles.find(r => r.name === 'admin');
+        const adminRole = await this.roleRepository.findOne({ where: { name: 'admin', schoolId: null } });
         if (!adminRole) {
-            throw new common_1.ConflictException('Le rôle admin n\'a pas pu être créé');
+            throw new common_1.ConflictException('Le rôle admin global n\'existe pas en base');
         }
         let directorUser = await this.userRepository.findOne({
             where: { email: createSchoolDto.directorEmail },

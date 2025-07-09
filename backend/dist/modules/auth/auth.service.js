@@ -69,7 +69,7 @@ let AuthService = class AuthService {
             type: user.type,
         };
         return {
-            access_token: this.jwtService.sign(payload),
+            access_token: this.jwtService.sign(payload, { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }),
             user: {
                 id: user.id,
                 email: user.email,

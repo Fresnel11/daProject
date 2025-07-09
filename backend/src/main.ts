@@ -2,8 +2,23 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { AppDataSource } from './data-source';
+
+async function runMigrations() {
+  try {
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+    await AppDataSource.runMigrations();
+    console.log('✅ Migrations exécutées avec succès');
+  } catch (error) {
+    console.error('Erreur lors de l\'exécution des migrations :', error);
+  }
+}
 
 async function bootstrap() {
+  await runMigrations(); // Exécute les migrations avant de démarrer l'app
+
   const app = await NestFactory.create(AppModule);
 
   // Global validation pipe
