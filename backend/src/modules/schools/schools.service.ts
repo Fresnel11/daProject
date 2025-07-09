@@ -58,10 +58,10 @@ export class SchoolsService {
     const savedSchool = await this.schoolRepository.save(school);
 
     // Créer les rôles par défaut pour l'école
-    const roles = await this.rolesService.createDefaultRolesForSchool(savedSchool.id);
-    const adminRole = roles.find(r => r.name === 'admin');
+    // Récupérer le rôle admin global (schoolId: null)
+    const adminRole = await this.roleRepository.findOne({ where: { name: 'admin', schoolId: null } });
     if (!adminRole) {
-      throw new ConflictException('Le rôle admin n\'a pas pu être créé');
+      throw new ConflictException('Le rôle admin global n\'existe pas en base');
     }
 
     // Check if user already exists

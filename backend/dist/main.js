@@ -4,7 +4,21 @@ const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
+const data_source_1 = require("./data-source");
+async function runMigrations() {
+    try {
+        if (!data_source_1.AppDataSource.isInitialized) {
+            await data_source_1.AppDataSource.initialize();
+        }
+        await data_source_1.AppDataSource.runMigrations();
+        console.log('✅ Migrations exécutées avec succès');
+    }
+    catch (error) {
+        console.error('Erreur lors de l\'exécution des migrations :', error);
+    }
+}
 async function bootstrap() {
+    await runMigrations();
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
