@@ -21,9 +21,12 @@ const select_school_dto_1 = require("./dto/select-school.dto");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const current_user_decorator_1 = require("../../common/decorators/current-user.decorator");
 const user_entity_1 = require("../users/entities/user.entity");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, userRepository) {
         this.authService = authService;
+        this.userRepository = userRepository;
     }
     async login(loginDto) {
         return this.authService.login(loginDto);
@@ -41,6 +44,19 @@ let AuthController = class AuthController {
             profilePictureUrl: user.profilePictureUrl,
             isEmailVerified: user.isEmailVerified,
         };
+    }
+    async checkEmail(email) {
+        if (!email) {
+            return { exists: false };
+        }
+        const user = await this.userRepository.findOne({ where: { email } });
+        return { exists: !!user };
+    }
+    async checkDirectorPhone(phone) {
+        if (!phone)
+            return { exists: false };
+        const user = await this.userRepository.findOne({ where: { phone } });
+        return { exists: !!user };
     }
 };
 exports.AuthController = AuthController;
@@ -74,9 +90,25 @@ __decorate([
     __metadata("design:paramtypes", [user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Get)('check-email'),
+    __param(0, (0, common_1.Query)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkEmail", null);
+__decorate([
+    (0, common_1.Get)('check-director-phone'),
+    __param(0, (0, common_1.Query)('phone')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkDirectorPhone", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Authentication'),
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        typeorm_2.Repository])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

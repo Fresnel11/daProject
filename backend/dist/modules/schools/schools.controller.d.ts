@@ -12,6 +12,15 @@ export declare class SchoolsController {
         status: import("../../common/enums/school-status.enum").SchoolStatus;
         message: string;
     }>;
+    checkEmail(email: string): Promise<{
+        exists: boolean;
+    }>;
+    checkPhone(phone: string): Promise<{
+        exists: boolean;
+    }>;
+    checkWebsite(website: string): Promise<{
+        exists: boolean;
+    }>;
     findPending(): Promise<import("./entities/school.entity").School[]>;
     validateSchool(id: string, validateSchoolDto: ValidateSchoolDto, user: User): Promise<{
         id: string;

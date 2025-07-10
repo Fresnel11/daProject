@@ -145,6 +145,20 @@ let SchoolsService = class SchoolsService {
             order: { createdAt: 'DESC' },
         });
     }
+    async checkEmailExists(email) {
+        const school = await this.schoolRepository.findOne({ where: { email } });
+        return !!school;
+    }
+    async checkPhoneExists(phone) {
+        const school = await this.schoolRepository.findOne({ where: { phone } });
+        return !!school;
+    }
+    async checkWebsiteExists(website) {
+        if (!website)
+            return false;
+        const school = await this.schoolRepository.findOne({ where: { website } });
+        return !!school;
+    }
 };
 exports.SchoolsService = SchoolsService;
 exports.SchoolsService = SchoolsService = __decorate([

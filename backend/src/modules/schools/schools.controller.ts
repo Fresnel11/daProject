@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SchoolsService } from './schools.service';
@@ -24,6 +25,28 @@ export class SchoolsController {
   @ApiOperation({ summary: 'Register a new school' })
   create(@Body() createSchoolDto: CreateSchoolDto) {
     return this.schoolsService.create(createSchoolDto);
+  }
+
+  // Les routes de vérification sont publiques (pas de guard)
+  @Get('check-email')
+  async checkEmail(@Query('email') email: string) {
+    if (!email) return { exists: false };
+    const exists = await this.schoolsService.checkEmailExists(email);
+    return { exists };
+  }
+
+  @Get('check-phone')
+  async checkPhone(@Query('phone') phone: string) {
+    if (!phone) return { exists: false };
+    const exists = await this.schoolsService.checkPhoneExists(phone);
+    return { exists };
+  }
+
+  @Get('check-website')
+  async checkWebsite(@Query('website') website: string) {
+    if (!website) return { exists: false };
+    const exists = await this.schoolsService.checkWebsiteExists(website);
+    return { exists };
   }
 
   @Get('pending')

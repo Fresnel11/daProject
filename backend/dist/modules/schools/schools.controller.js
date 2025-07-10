@@ -28,6 +28,24 @@ let SchoolsController = class SchoolsController {
     create(createSchoolDto) {
         return this.schoolsService.create(createSchoolDto);
     }
+    async checkEmail(email) {
+        if (!email)
+            return { exists: false };
+        const exists = await this.schoolsService.checkEmailExists(email);
+        return { exists };
+    }
+    async checkPhone(phone) {
+        if (!phone)
+            return { exists: false };
+        const exists = await this.schoolsService.checkPhoneExists(phone);
+        return { exists };
+    }
+    async checkWebsite(website) {
+        if (!website)
+            return { exists: false };
+        const exists = await this.schoolsService.checkWebsiteExists(website);
+        return { exists };
+    }
     findPending() {
         return this.schoolsService.findPendingSchools();
     }
@@ -50,6 +68,27 @@ __decorate([
     __metadata("design:paramtypes", [create_school_dto_1.CreateSchoolDto]),
     __metadata("design:returntype", void 0)
 ], SchoolsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('check-email'),
+    __param(0, (0, common_1.Query)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SchoolsController.prototype, "checkEmail", null);
+__decorate([
+    (0, common_1.Get)('check-phone'),
+    __param(0, (0, common_1.Query)('phone')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SchoolsController.prototype, "checkPhone", null);
+__decorate([
+    (0, common_1.Get)('check-website'),
+    __param(0, (0, common_1.Query)('website')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SchoolsController.prototype, "checkWebsite", null);
 __decorate([
     (0, common_1.Get)('pending'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

@@ -30,4 +30,7 @@ export declare class SchoolsService {
     findPendingSchools(): Promise<School[]>;
     findById(id: string): Promise<School>;
     findAll(): Promise<School[]>;
+    checkEmailExists(email: string): Promise<boolean>;
+    checkPhoneExists(phone: string): Promise<boolean>;
+    checkWebsiteExists(website: string): Promise<boolean>;
 }

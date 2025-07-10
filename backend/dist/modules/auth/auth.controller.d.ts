@@ -2,9 +2,11 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { SelectSchoolDto } from './dto/select-school.dto';
 import { User } from '@/modules/users/entities/user.entity';
+import { Repository } from 'typeorm';
 export declare class AuthController {
     private readonly authService;
-    constructor(authService: AuthService);
+    private readonly userRepository;
+    constructor(authService: AuthService, userRepository: Repository<User>);
     login(loginDto: LoginDto): Promise<{
         access_token: string;
         user: {
@@ -43,5 +45,11 @@ export declare class AuthController {
         type: import("../../common/enums/user-type.enum").UserType;
         profilePictureUrl: string;
         isEmailVerified: boolean;
+    }>;
+    checkEmail(email: string): Promise<{
+        exists: boolean;
+    }>;
+    checkDirectorPhone(phone: string): Promise<{
+        exists: boolean;
     }>;
 }
