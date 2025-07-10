@@ -52,7 +52,7 @@ export function RegisterPage() {
     setMounted(true);
   }, []);
 
-  const totalSteps = 3;
+  const totalSteps = 4;
 
   const form = useForm({
     defaultValues: {
@@ -191,7 +191,7 @@ export function RegisterPage() {
       directorPassword: values.directorPassword,
     };
     console.log('Payload envoyé au backend:', payload);
-    await schoolStore.registerSchool(payload, () => router.push('/dashboard'));
+    await schoolStore.registerSchool(payload, () => router.push('/account-pending'));
   }
 
   const goBack = () => {
@@ -206,6 +206,8 @@ export function RegisterPage() {
       case 2:
         return t("school_information");
       case 3:
+        return t("school_admin_information"); // à ajouter dans les traductions
+      case 4:
         return t("review_confirm");
       default:
         return "";
@@ -219,6 +221,8 @@ export function RegisterPage() {
       case 2:
         return t("school_info_subtitle");
       case 3:
+        return t("school_admin_info_subtitle"); // à ajouter dans les traductions
+      case 4:
         return t("review_information");
       default:
         return "";
@@ -541,7 +545,7 @@ export function RegisterPage() {
                           control={form.control}
                           name="website"
                           render={({ field }) => (
-                            <FormItem className="form-field">
+                            <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("website")}
                               </FormLabel>
@@ -615,7 +619,7 @@ export function RegisterPage() {
                           control={form.control}
                           name="postalCode"
                           render={({ field }) => (
-                            <FormItem className="form-field">
+                            <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("zip_code")}
                               </FormLabel>
@@ -626,6 +630,11 @@ export function RegisterPage() {
                             </FormItem>
                           )}
                         />
+                      </div>
+                    )}
+
+                    {currentStep === 3 && (
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
                           name="description"
@@ -726,21 +735,158 @@ export function RegisterPage() {
                       </div>
                     )}
 
-                    {currentStep === 3 && (
-                      <div className="space-y-6">
-                        <div className="text-center p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
-                          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Check className="w-8 h-8 text-white" />
-                          </div>
-                          <h3 className="text-2xl font-bold text-foreground mb-2">
-                            {t("almost_done")}
-                          </h3>
-                          <p className="text-muted-foreground">
-                            {t("review_information_message")}
-                          </p>
-                        </div>
-                      </div>
-                    )}
+{currentStep === 4 && (
+  <div className="space-y-8 transition-all duration-300">
+    {/* Header Section with Success Icon */}
+    <div className="text-center p-8 rounded-2xl border transition-all duration-300
+      dark:bg-gradient-to-br dark:from-primary/10 dark:to-primary/20 dark:border-primary/30
+      bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20
+      backdrop-blur-sm">
+      <div className="w-16 h-16 bg-green-500 hover:bg-green-600 transition-colors duration-300 
+        rounded-full flex items-center justify-center mx-auto mb-4
+        shadow-lg shadow-green-500/20 animate-fade-in">
+        <Check className="w-8 h-8 text-white animate-bounce-subtle" />
+      </div>
+      <h3 className="text-2xl font-bold mb-2 transition-colors duration-300
+        dark:text-gray-100 text-gray-900">
+        {t("almost_done")}
+      </h3>
+      <p className="transition-colors duration-300
+        dark:text-gray-400 text-gray-600">
+        {t("review_information_message")}
+      </p>
+    </div>
+
+    {/* Information Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Personal Information Card */}
+      <div className="rounded-xl transition-all duration-300 
+        dark:bg-gray-800/50 bg-white
+        dark:border-gray-700 border border-primary/10
+        dark:shadow-[0_0_15px_rgba(0,0,0,0.2)] shadow-lg
+        backdrop-blur-sm p-6 hover:transform hover:scale-[1.02]">
+        <h4 className="font-semibold text-lg mb-4 transition-colors duration-300
+          dark:text-primary-400 text-primary">
+          {t("personal_information")}
+        </h4>
+        <ul className="space-y-3 text-left">
+          {[
+            { label: t("first_name"), value: form.getValues("directorFirstName") },
+            { label: t("last_name"), value: form.getValues("directorLastName") },
+            { label: t("email"), value: form.getValues("directorEmail") },
+            { label: t("phone_number"), value: form.getValues("directorPhone") }
+          ].map((item, index) => (
+            <li key={index} className="transition-colors duration-300
+              dark:text-gray-300 text-gray-700 flex items-center gap-2">
+              <span className="font-medium transition-colors duration-300
+                dark:text-gray-200 text-gray-900">
+                {item.label}:
+              </span>
+              <span className="break-all">{item.value}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* School Information Card */}
+      <div className="rounded-xl transition-all duration-300
+        dark:bg-gray-800/50 bg-white
+        dark:border-gray-700 border border-primary/10
+        dark:shadow-[0_0_15px_rgba(0,0,0,0.2)] shadow-lg
+        backdrop-blur-sm p-6 hover:transform hover:scale-[1.02]">
+        <h4 className="font-semibold text-lg mb-4 transition-colors duration-300
+          dark:text-primary-400 text-primary">
+          {t("school_information")}
+        </h4>
+        <ul className="space-y-3 text-left">
+          {[
+            { label: t("school_name"), value: form.getValues("name") },
+            { label: t("email"), value: form.getValues("email") },
+            { label: t("phone_number"), value: form.getValues("phone") },
+            { label: t("website"), value: form.getValues("website") },
+            { label: t("address"), value: form.getValues("address") },
+            { label: t("city"), value: form.getValues("city") },
+            { label: t("country"), value: form.getValues("country") },
+            { label: t("zip_code"), value: form.getValues("postalCode") }
+          ].map((item, index) => (
+            <li key={index} className="transition-colors duration-300
+              dark:text-gray-300 text-gray-700 flex items-center gap-2">
+              <span className="font-medium transition-colors duration-300
+                dark:text-gray-200 text-gray-900">
+                {item.label}:
+              </span>
+              <span className="break-all">{item.value}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Admin Information Card - Full Width */}
+      <div className="rounded-xl md:col-span-2 transition-all duration-300
+        dark:bg-gray-800/50 bg-white
+        dark:border-gray-700 border border-primary/10
+        dark:shadow-[0_0_15px_rgba(0,0,0,0.2)] shadow-lg
+        backdrop-blur-sm p-6 hover:transform hover:scale-[1.02]">
+        <h4 className="font-semibold text-lg mb-4 transition-colors duration-300
+          dark:text-primary-400 text-primary">
+          {t("school_admin_information")}
+        </h4>
+        <ul className="space-y-3 text-left">
+          {[
+            { label: t("description"), value: form.getValues("description") },
+            { label: t("registration_number"), value: form.getValues("registrationNumber") },
+            { label: t("tax_number"), value: form.getValues("taxNumber") },
+            { 
+              label: t("school_type"), 
+              value: schoolTypes.find(st => st.value === form.getValues("schoolType"))?.label || "" 
+            },
+            { 
+              label: t("estimated_enrollment"), 
+              value: enrollmentRanges.find(er => er.value === form.getValues("estimatedEnrollment"))?.label || "" 
+            }
+          ].map((item, index) => (
+            <li key={index} className="transition-colors duration-300
+              dark:text-gray-300 text-gray-700 flex items-center gap-2">
+              <span className="font-medium transition-colors duration-300
+                dark:text-gray-200 text-gray-900">
+                {item.label}:
+              </span>
+              <span className="break-all">{item.value}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {/* Footer Message */}
+    <div className="text-center mt-8">
+      <p className="text-sm transition-colors duration-300
+        dark:text-gray-400 text-gray-600">
+        {t("please_verify_information") || "Veuillez vérifier que toutes les informations sont correctes avant de créer le compte."}
+      </p>
+    </div>
+  </div>
+)}
+
+<style jsx>{`
+  @keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s infinite;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+`}</style>
                   </div>
                   
                   <div className="flex gap-4 pt-6">
@@ -806,3 +952,5 @@ export function RegisterPage() {
     </div>
   );
 }
+
+// Ajout du composant ReviewInformation directement dans ce fichier

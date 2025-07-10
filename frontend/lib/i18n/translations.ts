@@ -168,6 +168,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     "passwords_dont_match": "Passwords don't match",
     "school_name": "School Name",
     "enter_school_name": "Enter your school name",
+    "website": "Website",
+    "enter_website": "Enter website",
+    "registration_number": "Registration Number",
+    "enter_registration_number": "Enter registration number",
+    "tax_number": "Tax Number",
+    "enter_tax_number": "Enter tax number",
     "school_type": "School Type",
     "select_school_type": "Select school type",
     "elementary_school": "Elementary School",
@@ -191,6 +197,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     "continue": "Continue",
     "back": "Back",
     "creating_account": "Creating account...",
+    "school_admin_information": "Administrative Information",
+    "school_admin_info_subtitle": "Enter the administrative and legal details of your school",
 
     // Common
     "required_field": "This field is required",
@@ -850,6 +858,12 @@ export const translations: Record<Locale, Record<string, string>> = {
     "passwords_dont_match": "Les mots de passe ne correspondent pas",
     "school_name": "Nom de l'École",
     "enter_school_name": "Entrez le nom de votre école",
+    "website": "Site web",
+    "enter_website": "Entrez le site web",
+    "registration_number": "Numéro d'enregistrement",
+    "enter_registration_number": "Entrez le numéro d'enregistrement",
+    "tax_number": "Numéro fiscal",
+    "enter_tax_number": "Entrez le numéro fiscal",
     "school_type": "Type d'École",
     "select_school_type": "Sélectionnez le type d'école",
     "elementary_school": "École Primaire",
@@ -873,6 +887,8 @@ export const translations: Record<Locale, Record<string, string>> = {
     "continue": "Continuer",
     "back": "Retour",
     "creating_account": "Création du compte...",
+    "school_admin_information": "Informations administratives",
+    "school_admin_info_subtitle": "Renseignez les informations administratives et légales de votre école",
 
     // Common
     "required_field": "Ce champ est requis",
