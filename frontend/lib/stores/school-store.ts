@@ -1,5 +1,12 @@
 import { create } from "zustand";
-import { registerSchool as registerSchoolService } from "../services/school-service";
+import {
+  registerSchool as registerSchoolService,
+  checkEmailExists as checkEmailExistsService,
+  checkSchoolEmailExists as checkSchoolEmailExistsService,
+  checkSchoolPhoneExists as checkSchoolPhoneExistsService,
+  checkSchoolWebsiteExists as checkSchoolWebsiteExistsService,
+  checkDirectorPhoneExists as checkDirectorPhoneExistsService,
+} from "../services/school-service";
 
 interface SchoolRegisterState {
   loading: boolean;
@@ -7,6 +14,11 @@ interface SchoolRegisterState {
   success: boolean;
   registerSchool: (data: any, onSuccess?: () => void) => Promise<void>;
   reset: () => void;
+  checkEmailExists: (email: string) => Promise<boolean>;
+  checkSchoolEmailExists: (email: string) => Promise<boolean>;
+  checkSchoolPhoneExists: (phone: string) => Promise<boolean>;
+  checkSchoolWebsiteExists: (website: string) => Promise<boolean>;
+  checkDirectorPhoneExists: (phone: string) => Promise<boolean>;
 }
 
 export const useSchoolStore = create<SchoolRegisterState>((set) => ({
@@ -14,7 +26,7 @@ export const useSchoolStore = create<SchoolRegisterState>((set) => ({
   error: null,
   success: false,
   registerSchool: async (data, onSuccess) => {
-    set({ loading: true, error: null, success: false });
+    set({ loading: false, error: null, success: false });
     try {
       await registerSchoolService(data);
       set({ success: true });
@@ -26,4 +38,19 @@ export const useSchoolStore = create<SchoolRegisterState>((set) => ({
     }
   },
   reset: () => set({ loading: false, error: null, success: false }),
+  checkEmailExists: async (email) => {
+    return await checkEmailExistsService(email);
+  },
+  checkSchoolEmailExists: async (email) => {
+    return await checkSchoolEmailExistsService(email);
+  },
+  checkSchoolPhoneExists: async (phone) => {
+    return await checkSchoolPhoneExistsService(phone);
+  },
+  checkSchoolWebsiteExists: async (website) => {
+    return await checkSchoolWebsiteExistsService(website);
+  },
+  checkDirectorPhoneExists: async (phone) => {
+    return await checkDirectorPhoneExistsService(phone);
+  },
 }));

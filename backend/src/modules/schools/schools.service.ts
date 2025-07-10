@@ -185,4 +185,20 @@ export class SchoolsService {
       order: { createdAt: 'DESC' },
     });
   }
+
+  async checkEmailExists(email: string): Promise<boolean> {
+    const school = await this.schoolRepository.findOne({ where: { email } });
+    return !!school;
+  }
+
+  async checkPhoneExists(phone: string): Promise<boolean> {
+    const school = await this.schoolRepository.findOne({ where: { phone } });
+    return !!school;
+  }
+
+  async checkWebsiteExists(website: string): Promise<boolean> {
+    if (!website) return false;
+    const school = await this.schoolRepository.findOne({ where: { website } });
+    return !!school;
+  }
 }

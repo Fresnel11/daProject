@@ -16,3 +16,58 @@ export async function registerSchool(data: any) {
     throw new Error(error.message || "Erreur réseau");
   }
 }
+
+export async function checkEmailExists(email: string) {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/auth/check-email`, {
+      params: { email },
+    });
+    return response.data.exists;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function checkSchoolEmailExists(email: string) {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/schools/check-email`, {
+      params: { email },
+    });
+    return response.data.exists;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function checkSchoolPhoneExists(phone: string) {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/schools/check-phone`, {
+      params: { phone },
+    });
+    return response.data.exists;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function checkSchoolWebsiteExists(website: string) {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/schools/check-website`, {
+      params: { website },
+    });
+    return response.data.exists;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function checkDirectorPhoneExists(phone: string) {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/auth/check-director-phone`, {
+      params: { phone },
+    });
+    return response.data.exists;
+  } catch (error) {
+    return false;
+  }
+}

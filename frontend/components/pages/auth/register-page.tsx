@@ -35,6 +35,18 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+  const schoolStore = useSchoolStore();
+  const [emailExists, setEmailExists] = useState(false);
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [schoolEmailExists, setSchoolEmailExists] = useState(false);
+  const [checkingSchoolEmail, setCheckingSchoolEmail] = useState(false);
+  const [schoolPhoneExists, setSchoolPhoneExists] = useState(false);
+  const [checkingSchoolPhone, setCheckingSchoolPhone] = useState(false);
+  const [schoolWebsiteExists, setSchoolWebsiteExists] = useState(false);
+  const [checkingSchoolWebsite, setCheckingSchoolWebsite] = useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [directorPhoneExists, setDirectorPhoneExists] = useState(false);
+  const [checkingDirectorPhone, setCheckingDirectorPhone] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -83,10 +95,77 @@ export function RegisterPage() {
     { value: "1000+", label: "1000+ " + t("students") },
   ];
 
-  const schoolStore = useSchoolStore();
+  // Ajout de la vérification d'email lors du blur
+  async function handleDirectorEmailBlur(email: string) {
+    if (!email) {
+      setEmailExists(false);
+      return;
+    }
+    setCheckingEmail(true);
+    const exists = await schoolStore.checkEmailExists(email);
+    setEmailExists(exists);
+    setCheckingEmail(false);
+  }
+
+  // Vérification des mots de passe lors du blur sur le champ de confirmation
+  function handleConfirmPasswordBlur(confirmPassword: string, password: string) {
+    setPasswordsMatch(confirmPassword === password);
+  }
+
+  async function handleSchoolEmailBlur(email: string) {
+    if (!email) {
+      setSchoolEmailExists(false);
+      return;
+    }
+    setCheckingSchoolEmail(true);
+    const exists = await schoolStore.checkSchoolEmailExists(email);
+    setSchoolEmailExists(exists);
+    setCheckingSchoolEmail(false);
+  }
+
+  async function handleSchoolPhoneBlur(phone: string) {
+    if (!phone) {
+      setSchoolPhoneExists(false);
+      return;
+    }
+    setCheckingSchoolPhone(true);
+    const exists = await schoolStore.checkSchoolPhoneExists(phone);
+    setSchoolPhoneExists(exists);
+    setCheckingSchoolPhone(false);
+  }
+
+  async function handleSchoolWebsiteBlur(website: string) {
+    if (!website) {
+      setSchoolWebsiteExists(false);
+      return;
+    }
+    setCheckingSchoolWebsite(true);
+    const exists = await schoolStore.checkSchoolWebsiteExists(website);
+    setSchoolWebsiteExists(exists);
+    setCheckingSchoolWebsite(false);
+  }
+
+  async function handleDirectorPhoneBlur(phone: string) {
+    // Si le numéro du directeur est le même que celui de l'école, on autorise
+    if (phone === form.getValues("phone")) {
+      setDirectorPhoneExists(false);
+      return;
+    }
+    if (!phone) {
+      setDirectorPhoneExists(false);
+      return;
+    }
+    setCheckingDirectorPhone(true);
+    const exists = await schoolStore.checkDirectorPhoneExists(phone);
+    setDirectorPhoneExists(exists);
+    setCheckingDirectorPhone(false);
+  }
 
   async function onSubmit(values: any) {
     if (currentStep < totalSteps) {
+      // Bloque la progression si l'email existe déjà, si les mots de passe ne correspondent pas, si l'email, le téléphone ou le site web de l'école existe déjà, ou si le numéro du directeur existe déjà
+      if (currentStep === 1 && (emailExists || !passwordsMatch || directorPhoneExists)) return;
+      if (currentStep === 2 && (schoolEmailExists || schoolPhoneExists || schoolWebsiteExists)) return;
       setSlideDirection('right');
       setCurrentStep(currentStep + 1);
       return;
@@ -267,8 +346,23 @@ export function RegisterPage() {
                                 {t("email")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_email") + " (Directeur)"} type="email" className="form-input" {...field} />
+                                <Input
+                                  placeholder={t("enter_email") + " (Directeur)"}
+                                  type="email"
+                                  className="form-input"
+                                  {...field}
+                                  onBlur={async (e) => {
+                                    field.onBlur?.();
+                                    await handleDirectorEmailBlur(e.target.value);
+                                  }}
+                                />
                               </FormControl>
+                              {checkingEmail && (
+                                <div className="text-gray-500 text-sm mt-1">{t("checking_email") || "Vérification en cours..."}</div>
+                              )}
+                              {emailExists && !checkingEmail && (
+                                <div className="text-red-500 text-sm mt-1">{t("email_already_exists") || "Cet email existe déjà."}</div>
+                              )}
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -282,8 +376,22 @@ export function RegisterPage() {
                                 {t("phone_number")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_phone") + " (Directeur)"} className="form-input" {...field} />
+                                <Input
+                                  placeholder={t("enter_phone") + " (Directeur)"}
+                                  className="form-input"
+                                  {...field}
+                                  onBlur={async (e) => {
+                                    field.onBlur?.();
+                                    await handleDirectorPhoneBlur(e.target.value);
+                                  }}
+                                />
                               </FormControl>
+                              {checkingDirectorPhone && (
+                                <div className="text-gray-500 text-sm mt-1">{t("checking_phone") || "Vérification en cours..."}</div>
+                              )}
+                              {directorPhoneExists && !checkingDirectorPhone && (
+                                <div className="text-red-500 text-sm mt-1">{t("director_phone_already_exists") || "Ce numéro de téléphone est déjà utilisé."}</div>
+                              )}
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -337,8 +445,15 @@ export function RegisterPage() {
                                   type="password"
                                   className="form-input"
                                   {...field} 
+                                  onBlur={(e) => {
+                                    field.onBlur?.();
+                                    handleConfirmPasswordBlur(e.target.value, form.getValues("directorPassword"));
+                                  }}
                                 />
                               </FormControl>
+                              {!passwordsMatch && (
+                                <div className="text-red-500 text-sm mt-1">{t("passwords_do_not_match") || "Les mots de passe ne correspondent pas."}</div>
+                              )}
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -372,8 +487,23 @@ export function RegisterPage() {
                                 {t("email")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_email") + " (École)"} type="email" className="form-input" {...field} />
+                                <Input
+                                  placeholder={t("enter_email") + " (École)"}
+                                  type="email"
+                                  className="form-input"
+                                  {...field}
+                                  onBlur={async (e) => {
+                                    field.onBlur?.();
+                                    await handleSchoolEmailBlur(e.target.value);
+                                  }}
+                                />
                               </FormControl>
+                              {checkingSchoolEmail && (
+                                <div className="text-gray-500 text-sm mt-1">{t("checking_email") || "Vérification en cours..."}</div>
+                              )}
+                              {schoolEmailExists && !checkingSchoolEmail && (
+                                <div className="text-red-500 text-sm mt-1">{t("school_email_already_exists") || "Cet email d'école existe déjà."}</div>
+                              )}
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -387,8 +517,22 @@ export function RegisterPage() {
                                 {t("phone_number")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_phone") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  placeholder={t("enter_phone") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onBlur={async (e) => {
+                                    field.onBlur?.();
+                                    await handleSchoolPhoneBlur(e.target.value);
+                                  }}
+                                />
                               </FormControl>
+                              {checkingSchoolPhone && (
+                                <div className="text-gray-500 text-sm mt-1">{t("checking_phone") || "Vérification en cours..."}</div>
+                              )}
+                              {schoolPhoneExists && !checkingSchoolPhone && (
+                                <div className="text-red-500 text-sm mt-1">{t("school_phone_already_exists") || "Ce numéro d'école existe déjà."}</div>
+                              )}
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -402,8 +546,22 @@ export function RegisterPage() {
                                 {t("website")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_website") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  placeholder={t("enter_website") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onBlur={async (e) => {
+                                    field.onBlur?.();
+                                    await handleSchoolWebsiteBlur(e.target.value);
+                                  }}
+                                />
                               </FormControl>
+                              {checkingSchoolWebsite && (
+                                <div className="text-gray-500 text-sm mt-1">{t("checking_website") || "Vérification en cours..."}</div>
+                              )}
+                              {schoolWebsiteExists && !checkingSchoolWebsite && (
+                                <div className="text-red-500 text-sm mt-1">{t("school_website_already_exists") || "Ce site web d'école existe déjà."}</div>
+                              )}
                               <FormMessage className="text-sm" />
                             </FormItem>
                           )}
@@ -600,8 +758,8 @@ export function RegisterPage() {
                     
                     <Button 
                       type="submit" 
-                      className="form-button flex-1"
-                      disabled={schoolStore.loading}
+                      className={`form-button flex-1 ${((schoolStore.loading || (currentStep === 1 && (emailExists || !passwordsMatch || directorPhoneExists)) || (currentStep === 2 && (schoolEmailExists || schoolPhoneExists || schoolWebsiteExists))) ? 'cursor-not-allowed' : '')}`}
+                      disabled={schoolStore.loading || (currentStep === 1 && (emailExists || !passwordsMatch || directorPhoneExists)) || (currentStep === 2 && (schoolEmailExists || schoolPhoneExists || schoolWebsiteExists))}
                     >
                       {schoolStore.loading ? (
                         <div className="flex items-center space-x-2">
