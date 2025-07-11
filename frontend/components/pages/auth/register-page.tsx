@@ -76,6 +76,7 @@ export function RegisterPage() {
       schoolType: "",
       estimatedEnrollment: "",
     },
+    mode: 'onBlur',
   });
 
   const schoolTypes = [
@@ -314,13 +315,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="directorFirstName"
+                          rules={{
+                            required: t("first_name_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ\s\-']+$/,
+                              message: t("invalid_first_name"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("first_name")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_first_name") + " (Directeur)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ\s\-']+"
+                                  placeholder={t("enter_first_name") + " (Directeur)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ\s\-']/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -329,13 +347,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="directorLastName"
+                          rules={{
+                            required: t("last_name_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ\s\-']+$/,
+                              message: t("invalid_last_name"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("last_name")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_last_name") + " (Directeur)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ\s\-']+"
+                                  placeholder={t("enter_last_name") + " (Directeur)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ\s\-']/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -344,6 +379,13 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="directorEmail"
+                          rules={{
+                            required: t("email_required"),
+                            pattern: {
+                              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                              message: t("invalid_email"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
@@ -351,8 +393,9 @@ export function RegisterPage() {
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={t("enter_email") + " (Directeur)"}
                                   type="email"
+                                  autoComplete="email"
+                                  placeholder={t("enter_email") + " (Directeur)"}
                                   className="form-input"
                                   {...field}
                                   onBlur={async (e) => {
@@ -365,7 +408,7 @@ export function RegisterPage() {
                                 <div className="text-gray-500 text-sm mt-1">{t("checking_email") || "Vérification en cours..."}</div>
                               )}
                               {emailExists && !checkingEmail && (
-                                <div className="text-red-500 text-sm mt-1">{t("email_already_exists") || "Cet email existe déjà."}</div>
+                                <div className="text-red-500 dark:text-red-500 text-sm mt-1">{t("email_already_exists") || "Cet email existe déjà."}</div>
                               )}
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -374,6 +417,13 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="directorPhone"
+                          rules={{
+                            required: t("phone_required"),
+                            pattern: {
+                              value: /^[0-9+\s\-]{8,20}$/,
+                              message: t("invalid_phone"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
@@ -381,9 +431,16 @@ export function RegisterPage() {
                               </FormLabel>
                               <FormControl>
                                 <Input
+                                  type="tel"
+                                  inputMode="numeric"
+                                  pattern="[0-9+\s\-]{8,20}"
                                   placeholder={t("enter_phone") + " (Directeur)"}
                                   className="form-input"
                                   {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9+\s\-]/g, "");
+                                    field.onChange(e);
+                                  }}
                                   onBlur={async (e) => {
                                     field.onBlur?.();
                                     await handleDirectorPhoneBlur(e.target.value);
@@ -394,7 +451,7 @@ export function RegisterPage() {
                                 <div className="text-gray-500 text-sm mt-1">{t("checking_phone") || "Vérification en cours..."}</div>
                               )}
                               {directorPhoneExists && !checkingDirectorPhone && (
-                                <div className="text-red-500 text-sm mt-1">{t("director_phone_already_exists") || "Ce numéro de téléphone est déjà utilisé."}</div>
+                                <div className="text-red-500 dark:text-red-300 text-sm mt-1">{t("director_phone_already_exists") || "Ce numéro de téléphone est déjà utilisé."}</div>
                               )}
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -456,7 +513,7 @@ export function RegisterPage() {
                                 />
                               </FormControl>
                               {!passwordsMatch && (
-                                <div className="text-red-500 text-sm mt-1">{t("passwords_do_not_match") || "Les mots de passe ne correspondent pas."}</div>
+                                <div className="text-red-500 dark:text-red-300 text-sm mt-1">{t("passwords_do_not_match") || "Les mots de passe ne correspondent pas."}</div>
                               )}
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -470,13 +527,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="name"
+                          rules={{
+                            required: t("school_name_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ0-9\s\-']+$/,
+                              message: t("invalid_school_name"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("school_name")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_school_name") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ0-9\s\-']+"
+                                  placeholder={t("enter_school_name") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ0-9\s\-']/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -485,6 +559,13 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="email"
+                          rules={{
+                            required: t("email_required"),
+                            pattern: {
+                              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                              message: t("invalid_email"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
@@ -492,8 +573,9 @@ export function RegisterPage() {
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={t("enter_email") + " (École)"}
                                   type="email"
+                                  autoComplete="email"
+                                  placeholder={t("enter_email") + " (École)"}
                                   className="form-input"
                                   {...field}
                                   onBlur={async (e) => {
@@ -506,7 +588,7 @@ export function RegisterPage() {
                                 <div className="text-gray-500 text-sm mt-1">{t("checking_email") || "Vérification en cours..."}</div>
                               )}
                               {schoolEmailExists && !checkingSchoolEmail && (
-                                <div className="text-red-500 text-sm mt-1">{t("school_email_already_exists") || "Cet email d'école existe déjà."}</div>
+                                <div className="text-red-500 dark:text-red-300 text-sm mt-1">{t("school_email_already_exists") || "Cet email d'école existe déjà."}</div>
                               )}
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -515,6 +597,13 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="phone"
+                          rules={{
+                            required: t("phone_required"),
+                            pattern: {
+                              value: /^[0-9+\s\-]{8,20}$/,
+                              message: t("invalid_phone"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
@@ -522,9 +611,16 @@ export function RegisterPage() {
                               </FormLabel>
                               <FormControl>
                                 <Input
+                                  type="tel"
+                                  inputMode="numeric"
+                                  pattern="[0-9+\s\-]{8,20}"
                                   placeholder={t("enter_phone") + " (École)"}
                                   className="form-input"
                                   {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9+\s\-]/g, "");
+                                    field.onChange(e);
+                                  }}
                                   onBlur={async (e) => {
                                     field.onBlur?.();
                                     await handleSchoolPhoneBlur(e.target.value);
@@ -535,7 +631,7 @@ export function RegisterPage() {
                                 <div className="text-gray-500 text-sm mt-1">{t("checking_phone") || "Vérification en cours..."}</div>
                               )}
                               {schoolPhoneExists && !checkingSchoolPhone && (
-                                <div className="text-red-500 text-sm mt-1">{t("school_phone_already_exists") || "Ce numéro d'école existe déjà."}</div>
+                                <div className="text-red-500 dark:text-red-300 text-sm mt-1">{t("school_phone_already_exists") || "Ce numéro d'école existe déjà."}</div>
                               )}
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -544,6 +640,13 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="website"
+                          rules={{
+                            required: t("website_required"),
+                            pattern: {
+                              value: /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}(\/\S*)?$/,
+                              message: t("invalid_website"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
@@ -551,9 +654,15 @@ export function RegisterPage() {
                               </FormLabel>
                               <FormControl>
                                 <Input
+                                  type="url"
+                                  pattern="https?://.+"
                                   placeholder={t("enter_website") + " (École)"}
                                   className="form-input"
                                   {...field}
+                                  onInput={e => {
+                                    // On laisse l'utilisateur saisir, la validation se fait sur blur/submit
+                                    field.onChange(e);
+                                  }}
                                   onBlur={async (e) => {
                                     field.onBlur?.();
                                     await handleSchoolWebsiteBlur(e.target.value);
@@ -564,7 +673,7 @@ export function RegisterPage() {
                                 <div className="text-gray-500 text-sm mt-1">{t("checking_website") || "Vérification en cours..."}</div>
                               )}
                               {schoolWebsiteExists && !checkingSchoolWebsite && (
-                                <div className="text-red-500 text-sm mt-1">{t("school_website_already_exists") || "Ce site web d'école existe déjà."}</div>
+                                <div className="text-red-500 dark:text-red-300 text-sm mt-1">{t("school_website_already_exists") || "Ce site web d'école existe déjà."}</div>
                               )}
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -573,13 +682,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="address"
+                          rules={{
+                            required: t("address_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ0-9\s\-',.]+$/,
+                              message: t("invalid_address"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("address")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_address") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ0-9\s\-',.]+"
+                                  placeholder={t("enter_address") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ0-9\s\-',.]/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -588,13 +714,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="city"
+                          rules={{
+                            required: t("city_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ\s\-']+$/,
+                              message: t("invalid_city"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("city")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_city") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ\s\-']+"
+                                  placeholder={t("enter_city") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ\s\-']/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -603,13 +746,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="country"
+                          rules={{
+                            required: t("country_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ\s\-']+$/,
+                              message: t("invalid_country"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("country")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_country") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ\s\-']+"
+                                  placeholder={t("enter_country") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ\s\-']/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -618,13 +778,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="postalCode"
+                          rules={{
+                            required: t("zip_required"),
+                            pattern: {
+                              value: /^[A-Za-z0-9\s\-]+$/,
+                              message: t("invalid_zip"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("zip_code")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_zip") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-z0-9\s\-]+"
+                                  placeholder={t("enter_zip") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z0-9\s\-]/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -638,13 +815,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="description"
+                          rules={{
+                            required: t("description_required"),
+                            pattern: {
+                              value: /^[A-Za-zÀ-ÿ0-9\s\-',.]+$/,
+                              message: t("invalid_description"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field lg:col-span-2">
                               <FormLabel className="form-label text-base">
                                 {t("description")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_description") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-zÀ-ÿ0-9\s\-',.]+"
+                                  placeholder={t("enter_description") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-zÀ-ÿ0-9\s\-',.]/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -653,13 +847,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="registrationNumber"
+                          rules={{
+                            required: t("registration_number_required"),
+                            pattern: {
+                              value: /^[A-Za-z0-9\s\-]+$/,
+                              message: t("invalid_registration_number"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("registration_number")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_registration_number") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-z0-9\s\-]+"
+                                  placeholder={t("enter_registration_number") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z0-9\s\-]/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -668,13 +879,30 @@ export function RegisterPage() {
                         <FormField
                           control={form.control}
                           name="taxNumber"
+                          rules={{
+                            required: t("tax_number_required"),
+                            pattern: {
+                              value: /^[A-Za-z0-9\s\-]+$/,
+                              message: t("invalid_tax_number"),
+                            },
+                          }}
                           render={({ field }) => (
                             <FormItem className="form-field">
                               <FormLabel className="form-label text-base">
                                 {t("tax_number")}
                               </FormLabel>
                               <FormControl>
-                                <Input placeholder={t("enter_tax_number") + " (École)"} className="form-input" {...field} />
+                                <Input
+                                  type="text"
+                                  pattern="[A-Za-z0-9\s\-]+"
+                                  placeholder={t("enter_tax_number") + " (École)"}
+                                  className="form-input"
+                                  {...field}
+                                  onInput={e => {
+                                    e.currentTarget.value = e.currentTarget.value.replace(/[^A-Za-z0-9\s\-]/g, "");
+                                    field.onChange(e);
+                                  }}
+                                />
                               </FormControl>
                               <FormMessage className="text-sm" />
                             </FormItem>
@@ -923,7 +1151,7 @@ export function RegisterPage() {
                     </Button>
                   </div>
                   {schoolStore.error && (
-                    <div className="text-red-500 text-center font-semibold py-2">
+                    <div className="text-red-500 dark:text-red-300 text-center font-semibold py-2">
                       {schoolStore.error}
                     </div>
                   )}
